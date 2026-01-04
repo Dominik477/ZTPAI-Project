@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { api } from "../api";
+import api from "../api";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -11,6 +11,7 @@ export default function Login() {
   async function onSubmit(e) {
     e.preventDefault();
     setError("");
+
     try {
       const res = await api.post("/api/auth/login", { email, password });
       localStorage.setItem("access_token", res.data.access_token);
@@ -21,30 +22,33 @@ export default function Login() {
   }
 
   return (
-    <div style={{ maxWidth: 420 }}>
-      <h2>Login</h2>
-      <form onSubmit={onSubmit} style={{ display: "grid", gap: 10 }}>
-        <label>
-          Email
+    <div className="card" style={{ maxWidth: 520, margin: "40px auto" }}>
+      <h2 style={{ marginTop: 0 }}>Sign in</h2>
+      <p className="muted" style={{ marginTop: 6 }}>
+        Use your account to manage products.
+      </p>
+
+      <form onSubmit={onSubmit} style={{ display: "grid", gap: 12, marginTop: 14 }}>
+        <div>
+          <label className="muted">Email</label>
+          <input className="input" value={email} onChange={(e) => setEmail(e.target.value)} />
+        </div>
+
+        <div>
+          <label className="muted">Password</label>
           <input
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            style={{ width: "100%", padding: 8 }}
-          />
-        </label>
-        <label>
-          Password
-          <input
+            className="input"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            style={{ width: "100%", padding: 8 }}
           />
-        </label>
+        </div>
 
         {error && <div style={{ color: "crimson" }}>{error}</div>}
 
-        <button style={{ padding: 10 }}>Sign in</button>
+        <button className="btn btn-primary" type="submit">
+          Login
+        </button>
       </form>
     </div>
   );
