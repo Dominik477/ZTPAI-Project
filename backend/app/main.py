@@ -1,12 +1,14 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
 from app.database import engine, Base, SessionLocal
 from app import models  
 from app.routers.products import router as products_router
 from app.routers.auth import router as auth_router
 from app.routers.meals import router as meals_router
 from app.seed import seed_products
+from app.routers.planner import router as planner_router
+from app.routers.shopping_list import router as shopping_list_router
+
 
 
 app = FastAPI(title="MealPrep API")
@@ -28,6 +30,9 @@ with SessionLocal() as db:
 app.include_router(auth_router)
 app.include_router(products_router)
 app.include_router(meals_router)
+app.include_router(planner_router)
+app.include_router(shopping_list_router)
+
 
 
 
