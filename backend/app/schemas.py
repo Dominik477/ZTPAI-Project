@@ -45,3 +45,26 @@ class TokenOut(BaseModel):
     access_token: str
     token_type: str = "bearer"
     user: UserOut
+    
+class MealItemIn(BaseModel):
+    product_id: int
+    quantity_grams: float
+
+
+class MealCreate(BaseModel):
+    name: str
+    items: list[MealItemIn]
+
+
+class MealItemOut(BaseModel):
+    product_id: int
+    product_name: str
+    quantity_grams: float
+    calories: float
+
+
+class MealOut(BaseModel):
+    id: int
+    name: str
+    total_calories: float
+    items: list[MealItemOut]
