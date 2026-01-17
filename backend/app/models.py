@@ -43,3 +43,13 @@ class MealItem(Base):
 
     meal = relationship("Meal", back_populates="items")
     product = relationship("Product")
+
+class MealPlan(Base):
+    __tablename__ = "meal_plans"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    day = Column(String(10), nullable=False)  # np. "mon", "tue"...
+    meal_id = Column(Integer, ForeignKey("meals.id"), nullable=False)
+
+    meal = relationship("Meal")
