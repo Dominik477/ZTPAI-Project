@@ -2,6 +2,8 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Login from "./pages/Login";
 import Products from "./pages/Products";
+import Meals from "./pages/Meals";
+
 
 function ProtectedRoute({ children }) {
   const token = localStorage.getItem("access_token");

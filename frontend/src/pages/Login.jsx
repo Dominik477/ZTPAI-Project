@@ -14,9 +14,35 @@ export default function Login() {
 
     try {
       const res = await api.post("/api/auth/login", { email, password });
-      localStorage.setItem("access_token", res.data.access_token);
+
+      console.log("LOGIN RESPONSE:", res.data);
+
+      const token = res.data.access_token;
+
+      // próba zapisu do localStorage
+      try {
+        localStorage.setItem("access_token", token);
+      } catch {
+        // ignorujemy
+      }
+
+      // fallback do sessionStorage
+      if (!localStorage.getItem("access_token")) {
+        sessionStorage.setItem("access_token", token);
+      }
+
+      console.log(
+        "TOKEN localStorage:",
+        localStorage.getItem("access_token")
+      );
+      console.log(
+        "TOKEN sessionStorage:",
+        sessionStorage.getItem("access_token")
+      );
+
       navigate("/products");
     } catch (err) {
+      console.log("LOGIN ERROR:", err);
       setError(err?.response?.data?.detail || "Login failed");
     }
   }
@@ -28,10 +54,17 @@ export default function Login() {
         Use your account to manage products.
       </p>
 
-      <form onSubmit={onSubmit} style={{ display: "grid", gap: 12, marginTop: 14 }}>
+      <form
+        onSubmit={onSubmit}
+        style={{ display: "grid", gap: 12, marginTop: 14 }}
+      >
         <div>
           <label className="muted">Email</label>
-          <input className="input" value={email} onChange={(e) => setEmail(e.target.value)} />
+          <input
+            className="input"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
         </div>
 
         <div>
