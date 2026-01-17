@@ -24,6 +24,14 @@ export default function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/meals"
+            element={
+              <ProtectedRoute>
+                <Meals />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </div>
     </>
