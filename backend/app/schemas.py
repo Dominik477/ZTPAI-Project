@@ -69,7 +69,7 @@ class MealOut(BaseModel):
     total_calories: float
     items: list[MealItemOut]
 
-    class PlanSetIn(BaseModel):
+class PlanSetIn(BaseModel):
     day: str  
     meal_id: int
 
@@ -79,6 +79,7 @@ class PlanOut(BaseModel):
     meal_id: int
     meal_name: str
     total_calories: float
+
 
 
 class ShoppingItemOut(BaseModel):

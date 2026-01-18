@@ -2,10 +2,12 @@ import { Link, useNavigate } from "react-router-dom";
 
 export default function Navbar() {
   const navigate = useNavigate();
-  const token = localStorage.getItem("access_token");
+  const token =
+    localStorage.getItem("access_token") || sessionStorage.getItem("access_token");
 
   function logout() {
     localStorage.removeItem("access_token");
+    sessionStorage.removeItem("access_token");
     navigate("/login");
   }
 
@@ -23,6 +25,9 @@ export default function Navbar() {
         <nav className="nav-links">
           <Link to="/products">Products</Link>
           <Link to="/meals">Meals</Link>
+          <Link to="/planner">Planner</Link>
+          <Link to="/shopping-list">Shopping list</Link>
+
           {!token && <Link to="/login">Login</Link>}
           {token && (
             <button className="btn btn-ghost" onClick={logout}>

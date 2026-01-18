@@ -3,10 +3,12 @@ import Navbar from "./components/Navbar";
 import Login from "./pages/Login";
 import Products from "./pages/Products";
 import Meals from "./pages/Meals";
-
+import Planner from "./pages/Planner";
+import ShoppingList from "./pages/ShoppingList";
 
 function ProtectedRoute({ children }) {
-  const token = localStorage.getItem("access_token");
+  const token =
+    localStorage.getItem("access_token") || sessionStorage.getItem("access_token");
   return token ? children : <Navigate to="/login" replace />;
 }
 
@@ -18,6 +20,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Navigate to="/products" replace />} />
           <Route path="/login" element={<Login />} />
+
           <Route
             path="/products"
             element={
@@ -26,11 +29,30 @@ export default function App() {
               </ProtectedRoute>
             }
           />
+
           <Route
             path="/meals"
             element={
               <ProtectedRoute>
                 <Meals />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/planner"
+            element={
+              <ProtectedRoute>
+                <Planner />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/shopping-list"
+            element={
+              <ProtectedRoute>
+                <ShoppingList />
               </ProtectedRoute>
             }
           />
