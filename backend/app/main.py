@@ -8,6 +8,7 @@ from app.routers.meals import router as meals_router
 from app.seed import seed_products
 from app.routers.planner import router as planner_router
 from app.routers.shopping_list import router as shopping_list_router
+from app.routers.inventory import router as inventory_router
 
 
 
@@ -32,6 +33,8 @@ app.include_router(products_router)
 app.include_router(meals_router)
 app.include_router(planner_router)
 app.include_router(shopping_list_router)
+app.include_router(inventory_router)
+
 
 
 

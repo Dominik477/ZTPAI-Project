@@ -86,3 +86,15 @@ class ShoppingItemOut(BaseModel):
     product_id: int
     product_name: str
     total_grams: float
+
+
+
+class InventoryUpsertIn(BaseModel):
+    product_id: int
+    quantity_grams: float
+
+
+class InventoryItemOut(BaseModel):
+    product_id: int
+    product_name: str
+    quantity_grams: float
