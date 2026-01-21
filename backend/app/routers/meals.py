@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.auth import get_current_user
-from app.models import Meal, MealItem, Product, User
+from app.models import Meal, MealItem, Product, User, InventoryItem 
 from app.schemas import MealCreate, MealOut, MealItemOut
 
 router = APIRouter(prefix="/api/meals", tags=["meals"])
@@ -78,3 +78,35 @@ def create_meal(
     db.commit()
     db.refresh(meal)
     return build_meal_out(meal)
+
+
+@router.post("/{meal_id}/cook")
+def cook_meal(
+    meal_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    meal = (
+        db.query(Meal)
+        .filter(Meal.id == meal_id, Meal.user_id == current_user.id)
+        .first()
+    )
+    if not meal:
+        raise HTTPException(status_code=404, detail="Meal not found")
+
+    for it in meal.items:
+        inv = (
+            db.query(InventoryItem)
+            .filter(
+                InventoryItem.user_id == current_user.id,
+                InventoryItem.product_id == it.product_id,
+            )
+            .first()
+        )
+        if not inv:
+            continue
+
+        inv.quantity_grams = max(0.0, float(inv.quantity_grams) - float(it.quantity_grams))
+
+    db.commit()
+    return {"status": "ok"}
