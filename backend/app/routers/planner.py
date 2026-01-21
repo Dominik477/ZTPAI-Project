@@ -69,3 +69,20 @@ def set_plan_day(
 
     meal_out = build_meal_out(meal)
     return PlanOut(day=day, meal_id=meal.id, meal_name=meal.name, total_calories=meal_out.total_calories)
+
+@router.delete("/{day}", status_code=status.HTTP_204_NO_CONTENT)
+def clear_day(
+    day: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    d = day.lower()
+    existing = (
+        db.query(MealPlan)
+        .filter(MealPlan.user_id == current_user.id, MealPlan.day == d)
+        .first()
+    )
+    if existing:
+        db.delete(existing)
+        db.commit()
+    return
