@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
+import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Products from "./pages/Products";
 import Meals from "./pages/Meals";
@@ -21,7 +22,7 @@ export default function App() {
       <Navbar />
       <div className="container">
         <Routes>
-          <Route path="/" element={<Navigate to="/products" replace />} />
+        <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 

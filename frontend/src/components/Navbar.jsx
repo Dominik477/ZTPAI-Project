@@ -15,11 +15,22 @@ export default function Navbar() {
     <header className="navbar">
       <div className="navbar-inner">
         <div className="brand">
-          <span className="brand-dot" />
-          <span>MealPrep</span>
-          <span className="muted" style={{ fontWeight: 600 }}>
-            planner
-          </span>
+          <Link
+            to="/"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              textDecoration: "none",
+              color: "inherit",
+            }}
+          >
+            <span className="brand-dot" />
+            <span>MealPrep</span>
+            <span className="muted" style={{ fontWeight: 600 }}>
+              planner
+            </span>
+          </Link>
         </div>
 
         <nav className="nav-links">
