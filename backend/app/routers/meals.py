@@ -10,29 +10,50 @@ router = APIRouter(prefix="/api/meals", tags=["meals"])
 
 
 def build_meal_out(meal: Meal) -> MealOut:
-    total = 0.0
+    total_cal = 0.0
+    total_p = 0.0
+    total_f = 0.0
+    total_c = 0.0
     out_items: list[MealItemOut] = []
 
     for item in meal.items:
         if not item.product:
             continue
-        calories = (item.quantity_grams / 100.0) * item.product.calories_per_100g
-        total += calories
+
+        factor = float(item.quantity_grams) / 100.0
+
+        calories = factor * float(item.product.calories_per_100g)
+        protein = factor * float(getattr(item.product, "protein_per_100g", 0.0))
+        fat = factor * float(getattr(item.product, "fat_per_100g", 0.0))
+        carbs = factor * float(getattr(item.product, "carbs_per_100g", 0.0))
+
+        total_cal += calories
+        total_p += protein
+        total_f += fat
+        total_c += carbs
+
         out_items.append(
             MealItemOut(
                 product_id=item.product_id,
                 product_name=item.product.name,
-                quantity_grams=item.quantity_grams,
+                quantity_grams=float(item.quantity_grams),
                 calories=calories,
+                protein=protein,
+                fat=fat,
+                carbs=carbs,
             )
         )
 
     return MealOut(
         id=meal.id,
         name=meal.name,
-        total_calories=total,
+        total_calories=total_cal,
+        total_protein=total_p,
+        total_fat=total_f,
+        total_carbs=total_c,
         items=out_items,
     )
+
 
 
 @router.get("", response_model=list[MealOut])

@@ -20,6 +20,10 @@ class Product(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(255), nullable=False)
     calories_per_100g = Column(Float, nullable=False)
+    protein_per_100g = Column(Float, nullable=False, default=0)
+    fat_per_100g = Column(Float, nullable=False, default=0)
+    carbs_per_100g = Column(Float, nullable=False, default=0)
+
 
 
 class Meal(Base):

@@ -5,19 +5,32 @@ class ProductOut(BaseModel):
     id: int
     name: str
     calories_per_100g: float
+    protein_per_100g: float
+    fat_per_100g: float
+    carbs_per_100g: float
 
     class Config:
         from_attributes = True
 
 
-class ProductCreate(BaseModel):
-    name: str
-    calories_per_100g: float
-
 
 class ProductUpdate(BaseModel):
     name: str | None = None
     calories_per_100g: float | None = None
+    protein_per_100g: float | None = None
+    fat_per_100g: float | None = None
+    carbs_per_100g: float | None = None
+
+
+
+
+class ProductCreate(BaseModel):
+    name: str
+    calories_per_100g: float
+    protein_per_100g: float = 0
+    fat_per_100g: float = 0
+    carbs_per_100g: float = 0
+
 
 
 
@@ -61,13 +74,21 @@ class MealItemOut(BaseModel):
     product_name: str
     quantity_grams: float
     calories: float
+    protein: float
+    fat: float
+    carbs: float
+
 
 
 class MealOut(BaseModel):
     id: int
     name: str
     total_calories: float
+    total_protein: float
+    total_fat: float
+    total_carbs: float
     items: list[MealItemOut]
+
 
 class PlanSetIn(BaseModel):
     day: str  
@@ -79,6 +100,10 @@ class PlanOut(BaseModel):
     meal_id: int
     meal_name: str
     total_calories: float
+    total_protein: float
+    total_fat: float
+    total_carbs: float
+
 
 
 

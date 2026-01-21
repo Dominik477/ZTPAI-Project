@@ -31,6 +31,9 @@ def get_plan(
             meal_id=meal.id,
             meal_name=meal.name,
             total_calories=meal_out.total_calories,
+            total_protein=meal_out.total_protein,
+            total_fat=meal_out.total_fat,
+            total_carbs=meal_out.total_carbs,
           )
         )
     order = {"mon": 1, "tue": 2, "wed": 3, "thu": 4, "fri": 5, "sat": 6, "sun": 7}
@@ -68,7 +71,15 @@ def set_plan_day(
         db.commit()
 
     meal_out = build_meal_out(meal)
-    return PlanOut(day=day, meal_id=meal.id, meal_name=meal.name, total_calories=meal_out.total_calories)
+    return PlanOut(
+    day=day,
+    meal_id=meal.id,
+    meal_name=meal.name,
+    total_calories=meal_out.total_calories,
+    total_protein=meal_out.total_protein,
+    total_fat=meal_out.total_fat,
+    total_carbs=meal_out.total_carbs,
+    )
 
 @router.delete("/{day}", status_code=status.HTTP_204_NO_CONTENT)
 def clear_day(
