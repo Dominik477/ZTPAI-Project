@@ -5,6 +5,8 @@ import Products from "./pages/Products";
 import Meals from "./pages/Meals";
 import Planner from "./pages/Planner";
 import ShoppingList from "./pages/ShoppingList";
+import Inventory from "./pages/Inventory";
+
 
 function ProtectedRoute({ children }) {
   const token =
@@ -56,6 +58,16 @@ export default function App() {
               </ProtectedRoute>
             }
           />
+          
+          <Route
+            path="/inventory"
+            element={
+              <ProtectedRoute>
+                <Inventory />
+              </ProtectedRoute>
+            }
+          />
+
         </Routes>
       </div>
     </>

@@ -21,13 +21,20 @@ export default function ShoppingList() {
     })();
   }, []);
 
+  const totalMissing = items.reduce((sum, it) => sum + (it.missing_grams || 0), 0);
+
   return (
     <div style={{ display: "grid", gap: 14 }}>
       <div className="card">
         <h2 style={{ marginTop: 0 }}>Shopping list</h2>
         <p className="muted" style={{ marginTop: 6 }}>
-          Auto-generated from your weekly plan (sum of product grams).
+          Generated from planner. Missing = Needed − In stock.
         </p>
+        {items.length > 0 && (
+          <p className="muted" style={{ marginTop: 6 }}>
+            Total missing (sum): <strong>{Math.round(totalMissing)} g</strong>
+          </p>
+        )}
       </div>
 
       {error && <div style={{ color: "crimson" }}>{error}</div>}
@@ -40,14 +47,20 @@ export default function ShoppingList() {
             <thead>
               <tr>
                 <th>Product</th>
-                <th style={{ width: 160 }}>Total grams</th>
+                <th style={{ width: 140 }}>Needed (g)</th>
+                <th style={{ width: 140 }}>In stock (g)</th>
+                <th style={{ width: 140 }}>Missing (g)</th>
               </tr>
             </thead>
             <tbody>
               {items.map((it) => (
                 <tr key={it.product_id}>
                   <td>{it.product_name}</td>
-                  <td>{Math.round(it.total_grams)} g</td>
+                  <td>{Math.round(it.total_needed_grams)}</td>
+                  <td>{Math.round(it.in_stock_grams)}</td>
+                  <td>
+                    <strong>{Math.round(it.missing_grams)}</strong>
+                  </td>
                 </tr>
               ))}
             </tbody>

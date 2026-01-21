@@ -24,6 +24,7 @@ export default function Navbar() {
 
         <nav className="nav-links">
           <Link to="/products">Products</Link>
+          <Link to="/inventory">Inventory</Link>
           <Link to="/meals">Meals</Link>
           <Link to="/planner">Planner</Link>
           <Link to="/shopping-list">Shopping list</Link>
