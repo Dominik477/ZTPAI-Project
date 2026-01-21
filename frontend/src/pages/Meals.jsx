@@ -195,10 +195,28 @@ export default function Meals() {
           <div style={{ display: "grid", gap: 12 }}>
             {meals.map((m) => (
               <div key={m.id} className="card" style={{ borderRadius: 14 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", gap: 10 }}>
-                  <strong>{m.name}</strong>
-                  <span className="muted">{Math.round(m.total_calories)} kcal</span>
+               <div style={{ display: "flex", justifyContent: "space-between", gap: 10, alignItems: "center" }}>
+                <div>
+                  <strong>{m.name}</strong>{" "}
+                  <span className="muted">({Math.round(m.total_calories)} kcal)</span>
                 </div>
+
+                <button
+                  className="btn btn-primary"
+                  onClick={async () => {
+                    try {
+                      await api.post(`/api/meals/${m.id}/cook`);
+                      setInfo(`Cooked: ${m.name} (inventory updated)`);
+                      setError("");
+                    } catch (err) {
+                      setError(err?.response?.data?.detail || "Failed to cook meal");
+                      setInfo("");
+                    }
+                  }}
+                >
+                  Cook
+                </button>
+              </div>
 
                 <div style={{ marginTop: 10 }}>
                   <table className="table">
