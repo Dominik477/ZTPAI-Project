@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 from app.auth import get_current_user
 from app.database import get_db
-from app.models import Meal, MealItem, MealPlan, Product, User
+from app.models import MealItem, MealPlan, Product, User, InventoryItem
 from app.schemas import ShoppingItemOut
 
 router = APIRouter(prefix="/api/shopping-list", tags=["shopping-list"])
@@ -19,26 +19,36 @@ def get_shopping_list(
     if not meal_ids:
         return []
 
-    items = (
-        db.query(MealItem)
-        .filter(MealItem.meal_id.in_(meal_ids))
-        .all()
-    )
+    items = db.query(MealItem).filter(MealItem.meal_id.in_(meal_ids)).all()
 
-    totals: dict[int, float] = {}
+    needed: dict[int, float] = {}
     for it in items:
-        totals[it.product_id] = totals.get(it.product_id, 0.0) + float(it.quantity_grams)
+        needed[it.product_id] = needed.get(it.product_id, 0.0) + float(it.quantity_grams)
 
-    products = db.query(Product).filter(Product.id.in_(list(totals.keys()))).all()
+    products = db.query(Product).filter(Product.id.in_(list(needed.keys()))).all()
     name_map = {p.id: p.name for p in products}
 
+    inv_rows = (
+        db.query(InventoryItem)
+        .filter(
+            InventoryItem.user_id == current_user.id,
+            InventoryItem.product_id.in_(list(needed.keys())),
+        )
+        .all()
+    )
+    stock_map = {r.product_id: float(r.quantity_grams) for r in inv_rows}
+
     out: list[ShoppingItemOut] = []
-    for pid, grams in sorted(totals.items(), key=lambda x: x[0]):
+    for pid, total_needed in sorted(needed.items(), key=lambda x: x[0]):
+        in_stock = stock_map.get(pid, 0.0)
+        missing = max(0.0, total_needed - in_stock)
         out.append(
             ShoppingItemOut(
                 product_id=pid,
                 product_name=name_map.get(pid, f"Product {pid}"),
-                total_grams=grams,
+                total_needed_grams=total_needed,
+                in_stock_grams=in_stock,
+                missing_grams=missing,
             )
         )
     return out

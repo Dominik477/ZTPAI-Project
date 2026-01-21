@@ -85,7 +85,10 @@ class PlanOut(BaseModel):
 class ShoppingItemOut(BaseModel):
     product_id: int
     product_name: str
-    total_grams: float
+    total_needed_grams: float
+    in_stock_grams: float
+    missing_grams: float
+
 
 
 
@@ -98,3 +101,4 @@ class InventoryItemOut(BaseModel):
     product_id: int
     product_name: str
     quantity_grams: float
+
