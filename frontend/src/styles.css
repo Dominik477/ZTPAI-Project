@@ -107,3 +107,43 @@ a:hover { text-decoration: underline; }
 .muted { color: rgba(38, 50, 56, 0.65); }
 .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 @media (max-width: 720px) { .row { grid-template-columns: 1fr; } }
+
+.badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(176, 190, 197, 0.9);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.badge-missing {
+  border-color: rgba(30, 136, 229, 0.8);
+  color: var(--blue-dark);
+  background: rgba(30, 136, 229, 0.08);
+}
+
+.row-missing {
+  background: rgba(30, 136, 229, 0.06);
+}
+
+@media print {
+  .navbar, .no-print {
+    display: none !important;
+  }
+  body {
+    background: white;
+  }
+  .container {
+    max-width: none;
+    padding: 0;
+  }
+  .card {
+    border: 0;
+    box-shadow: none;
+    padding: 0;
+  }
+  .table th, .table td {
+    border-bottom: 1px solid #ddd;
+  }
+}
