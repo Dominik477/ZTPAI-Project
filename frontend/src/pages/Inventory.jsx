@@ -1,9 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import api from "../api";
 
 export default function Inventory() {
-  const [products, setProducts] = useState([]);
-  const [inventory, setInventory] = useState([]);
+  const [rows, setRows] = useState([]);
 
   const [selectedProductId, setSelectedProductId] = useState("");
   const [grams, setGrams] = useState("");
@@ -11,31 +10,21 @@ export default function Inventory() {
   const [error, setError] = useState("");
   const [info, setInfo] = useState("");
 
-  async function loadAll() {
-    const [prodRes, invRes] = await Promise.all([
-      api.get("/api/products"),
-      api.get("/api/inventory"),
-    ]);
-    setProducts(prodRes.data);
-    setInventory(invRes.data);
+  async function load() {
+    const res = await api.get("/api/inventory");
+    setRows(res.data);
   }
 
   useEffect(() => {
     (async () => {
       setError("");
       try {
-        await loadAll();
+        await load();
       } catch {
-        setError("Failed to load inventory data");
+        setError("Failed to load inventory");
       }
     })();
   }, []);
-
-  const invMap = useMemo(() => {
-    const m = new Map();
-    for (const row of inventory) m.set(row.product_id, row);
-    return m;
-  }, [inventory]);
 
   async function saveItem(e) {
     e.preventDefault();
@@ -54,16 +43,16 @@ export default function Inventory() {
       setSelectedProductId("");
       setGrams("");
       setInfo("Saved");
-      await loadAll();
+      await load();
     } catch (err) {
       setError(err?.response?.data?.detail || "Failed to save inventory item");
     }
   }
 
   function prefill(productId) {
-    const row = invMap.get(productId);
+    const row = rows.find((r) => r.product_id === productId);
     setSelectedProductId(String(productId));
-    setGrams(row ? String(row.quantity_grams) : "0");
+    setGrams(String(row ? row.quantity_grams : 0));
     setInfo("");
     setError("");
   }
@@ -73,7 +62,7 @@ export default function Inventory() {
       <div className="card">
         <h2 style={{ marginTop: 0 }}>Inventory</h2>
         <p className="muted" style={{ marginTop: 6 }}>
-          Track what you have at home (grams per product). Shopping list will subtract these amounts.
+          Stock is your real pantry. Reserved is computed from the weekly planner. Available = Stock − Reserved.
         </p>
       </div>
 
@@ -92,9 +81,9 @@ export default function Inventory() {
               onChange={(e) => setSelectedProductId(e.target.value)}
             >
               <option value="">Select product...</option>
-              {products.map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.name}
+              {rows.map((r) => (
+                <option key={r.product_id} value={r.product_id}>
+                  {r.product_name}
                 </option>
               ))}
             </select>
@@ -121,36 +110,43 @@ export default function Inventory() {
       <div className="card">
         <h3 style={{ marginTop: 0 }}>Current stock</h3>
 
-        {products.length === 0 ? (
-          <div className="muted">No products yet.</div>
-        ) : (
-          <table className="table">
-            <thead>
-              <tr>
-                <th>Product</th>
-                <th style={{ width: 160 }}>In stock (g)</th>
-                <th style={{ width: 140 }}>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {products.map((p) => {
-                const row = invMap.get(p.id);
-                const qty = row ? row.quantity_grams : 0;
-                return (
-                  <tr key={p.id}>
-                    <td>{p.name}</td>
-                    <td>{Math.round(qty)}</td>
-                    <td>
-                      <button className="btn btn-ghost" onClick={() => prefill(p.id)}>
-                        Edit
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        )}
+        <table className="table">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th style={{ width: 140 }}>Stock (g)</th>
+              <th style={{ width: 140 }}>Reserved (g)</th>
+              <th style={{ width: 160 }}>Available (g)</th>
+              <th style={{ width: 120 }}>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((r) => {
+              const available = r.available_grams;
+              return (
+                <tr key={r.product_id} className={available < 0 ? "row-missing" : ""}>
+                  <td>{r.product_name}</td>
+                  <td>{Math.round(r.quantity_grams)}</td>
+                  <td>{Math.round(r.reserved_grams)}</td>
+                  <td>
+                    <strong style={{ color: available < 0 ? "crimson" : undefined }}>
+                      {Math.round(available)}
+                    </strong>
+                  </td>
+                  <td>
+                    <button className="btn btn-ghost" onClick={() => prefill(r.product_id)}>
+                      Edit
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+
+        <div className="muted" style={{ marginTop: 10 }}>
+          Tip: change Planner and come back here — Reserved updates automatically.
+        </div>
       </div>
     </div>
   );
