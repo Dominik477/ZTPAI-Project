@@ -101,4 +101,5 @@ class InventoryItemOut(BaseModel):
     product_id: int
     product_name: str
     quantity_grams: float
-
+    reserved_grams: float
+    available_grams: float

@@ -45,7 +45,7 @@ export default function Products() {
       <div className="card">
         <h2 style={{ marginTop: 0 }}>Products</h2>
         <p className="muted" style={{ marginTop: 6 }}>
-          Manage your ingredients base. Creating a product requires login (JWT).
+          Manage your ingredients base. Creating a product requires login.
         </p>
       </div>
 
