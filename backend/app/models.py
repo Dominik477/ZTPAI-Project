@@ -53,3 +53,13 @@ class MealPlan(Base):
     meal_id = Column(Integer, ForeignKey("meals.id"), nullable=False)
 
     meal = relationship("Meal")
+
+class InventoryItem(Base):
+    __tablename__ = "inventory_items"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    product_id = Column(Integer, ForeignKey("products.id"), nullable=False)
+    quantity_grams = Column(Float, nullable=False, default=0)
+
+    product = relationship("Product")
