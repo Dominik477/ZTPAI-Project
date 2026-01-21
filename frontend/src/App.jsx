@@ -6,6 +6,7 @@ import Meals from "./pages/Meals";
 import Planner from "./pages/Planner";
 import ShoppingList from "./pages/ShoppingList";
 import Inventory from "./pages/Inventory";
+import Register from "./pages/Register";
 
 
 function ProtectedRoute({ children }) {
@@ -22,6 +23,8 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Navigate to="/products" replace />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+
 
           <Route
             path="/products"

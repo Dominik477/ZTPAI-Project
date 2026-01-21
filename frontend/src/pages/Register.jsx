@@ -1,66 +1,72 @@
 import { useState } from "react";
-import api from "../api";
 import { Link, useNavigate } from "react-router-dom";
+import api from "../api";
 
-export default function Login() {
+export default function Register() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("user@example.com");
-  const [password, setPassword] = useState("haslo123");
+
+  const [email, setEmail] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [password, setPassword] = useState("");
+
   const [error, setError] = useState("");
+  const [info, setInfo] = useState("");
 
   async function onSubmit(e) {
     e.preventDefault();
     setError("");
+    setInfo("");
 
     try {
+      await api.post("/api/auth/register", {
+        email,
+        full_name: fullName,
+        password,
+      });
+
       const res = await api.post("/api/auth/login", { email, password });
-
-      console.log("LOGIN RESPONSE:", res.data);
-
       const token = res.data.access_token;
 
       try {
         localStorage.setItem("access_token", token);
       } catch {
       }
-
       if (!localStorage.getItem("access_token")) {
         sessionStorage.setItem("access_token", token);
       }
 
-      console.log(
-        "TOKEN localStorage:",
-        localStorage.getItem("access_token")
-      );
-      console.log(
-        "TOKEN sessionStorage:",
-        sessionStorage.getItem("access_token")
-      );
-
+      setInfo("Account created. Redirecting...");
       navigate("/products");
     } catch (err) {
-      console.log("LOGIN ERROR:", err);
-      setError(err?.response?.data?.detail || "Login failed");
+      setError(err?.response?.data?.detail || "Registration failed");
     }
   }
 
   return (
     <div className="card" style={{ maxWidth: 520, margin: "40px auto" }}>
-      <h2 style={{ marginTop: 0 }}>Sign in</h2>
+      <h2 style={{ marginTop: 0 }}>Create account</h2>
       <p className="muted" style={{ marginTop: 6 }}>
-        Use your account to manage products.
+        Register to manage your products, meals and planner.
       </p>
 
-      <form
-        onSubmit={onSubmit}
-        style={{ display: "grid", gap: 12, marginTop: 14 }}
-      >
+      <form onSubmit={onSubmit} style={{ display: "grid", gap: 12, marginTop: 14 }}>
         <div>
           <label className="muted">Email</label>
           <input
             className="input"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            placeholder="you@example.com"
+          />
+        </div>
+
+        <div>
+          <label className="muted">Full name</label>
+          <input
+            className="input"
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
+            placeholder="John Doe"
           />
         </div>
 
@@ -71,18 +77,20 @@ export default function Login() {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            placeholder="min. 6 characters"
           />
         </div>
 
         {error && <div style={{ color: "crimson" }}>{error}</div>}
+        {info && <div style={{ color: "green" }}>{info}</div>}
 
         <button className="btn btn-primary" type="submit">
-          Login
+          Register
         </button>
-        <div className="muted" style={{ marginTop: 10 }}>
-          No account yet? <Link to="/register">Create one</Link>
-        </div>
 
+        <div className="muted" style={{ marginTop: 4 }}>
+          Already have an account? <Link to="/login">Sign in</Link>
+        </div>
       </form>
     </div>
   );

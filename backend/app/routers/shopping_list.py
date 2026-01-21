@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from app.auth import get_current_user
@@ -14,16 +15,21 @@ def get_shopping_list(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    plan_rows = db.query(MealPlan).filter(MealPlan.user_id == current_user.id).all()
-    meal_ids = [p.meal_id for p in plan_rows]
-    if not meal_ids:
+    has_plan = db.query(MealPlan.id).filter(MealPlan.user_id == current_user.id).first()
+    if not has_plan:
         return []
 
-    items = db.query(MealItem).filter(MealItem.meal_id.in_(meal_ids)).all()
+    rows = (
+        db.query(MealItem.product_id, func.sum(MealItem.quantity_grams))
+        .join(MealPlan, MealPlan.meal_id == MealItem.meal_id)
+        .filter(MealPlan.user_id == current_user.id)
+        .group_by(MealItem.product_id)
+        .all()
+    )
 
-    needed: dict[int, float] = {}
-    for it in items:
-        needed[it.product_id] = needed.get(it.product_id, 0.0) + float(it.quantity_grams)
+    needed = {pid: float(total or 0.0) for pid, total in rows}
+    if not needed:
+        return []
 
     products = db.query(Product).filter(Product.id.in_(list(needed.keys()))).all()
     name_map = {p.id: p.name for p in products}
