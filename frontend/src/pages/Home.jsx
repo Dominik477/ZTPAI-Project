@@ -59,7 +59,7 @@ export default function Home() {
       <div className="card">
         <h2 style={{ marginTop: 0 }}>How it works</h2>
         <ol style={{ lineHeight: 1.85, margin: 0, paddingLeft: 18 }}>
-          <li>Add products (calories/macros per 100g).</li>
+          <li>Add products (calories per 100g).</li>
           <li>Create meals and add ingredients with grams.</li>
           <li>Plan meals for the week.</li>
           <li>Check shopping list: needed vs stock vs missing.</li>

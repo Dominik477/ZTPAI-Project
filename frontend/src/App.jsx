@@ -8,6 +8,8 @@ import Planner from "./pages/Planner";
 import ShoppingList from "./pages/ShoppingList";
 import Inventory from "./pages/Inventory";
 import Register from "./pages/Register";
+import Footer from "./components/Footer";
+
 
 
 function ProtectedRoute({ children }) {
@@ -18,11 +20,13 @@ function ProtectedRoute({ children }) {
 
 export default function App() {
   return (
-    <>
-      <Navbar />
-      <div className="container">
-        <Routes>
-        <Route path="/" element={<Home />} />
+    
+  <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+  <Navbar />
+
+  <div className="container" style={{ flex: 1 }}>
+    <Routes>
+      <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
@@ -72,8 +76,12 @@ export default function App() {
             }
           />
 
-        </Routes>
-      </div>
-    </>
+    </Routes>
+  </div>
+
+    <Footer />
+  </div>
+
+
   );
 }

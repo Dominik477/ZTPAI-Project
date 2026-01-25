@@ -258,3 +258,6 @@ label {
     border-bottom: 1px solid #ddd;
   }
 }
+footer strong {
+  color: rgba(255, 255, 255, 0.95);
+}
