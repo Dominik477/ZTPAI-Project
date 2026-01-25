@@ -12,3 +12,6 @@ Users create products (kcal/macros per 100g), build meals from products, plan me
 ## Quick start (Docker)
 ```bash
 docker compose up --build
+```
+
+<img width="961" height="611" alt="image" src="https://github.com/user-attachments/assets/2db2beb1-faa9-44bd-b36d-455f8f6cfd0a" />
