@@ -9,6 +9,7 @@ import ShoppingList from "./pages/ShoppingList";
 import Inventory from "./pages/Inventory";
 import Register from "./pages/Register";
 import Footer from "./components/Footer";
+import NotFound from "./pages/NotFound";
 
 
 
@@ -75,6 +76,7 @@ export default function App() {
               </ProtectedRoute>
             }
           />
+          <Route path="*" element={<NotFound />} />
 
     </Routes>
   </div>

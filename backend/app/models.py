@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Float, ForeignKey
+from sqlalchemy import Column, Integer, String, Float, ForeignKey, text
 from sqlalchemy.orm import relationship
 from app.database import Base
 
@@ -10,6 +10,8 @@ class User(Base):
     email = Column(String(255), unique=True, nullable=False, index=True)
     full_name = Column(String(255), nullable=False)
     password_hash = Column(String(255), nullable=False)
+
+    role = Column(String(50), nullable=False, server_default=text("'user'"))
 
     meals = relationship("Meal", back_populates="user", cascade="all, delete-orphan")
 

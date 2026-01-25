@@ -1,6 +1,6 @@
 import os
 from datetime import datetime, timedelta
-from typing import Optional
+from typing import Optional, Callable
 
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
@@ -28,6 +28,7 @@ def verify_password(password: str, password_hash: str) -> bool:
 
 
 def create_access_token(sub: str, expires_minutes: Optional[int] = None) -> str:
+
     if expires_minutes is None:
         expires_minutes = ACCESS_TOKEN_EXPIRE_MINUTES
     expire = datetime.utcnow() + timedelta(minutes=expires_minutes)
@@ -39,6 +40,7 @@ def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security),
     db: Session = Depends(get_db),
 ) -> User:
+
     token = credentials.credentials
 
     try:
@@ -60,3 +62,19 @@ def get_current_user(
             detail="User not found",
         )
     return user
+
+
+def require_role(*allowed_roles: str) -> Callable:
+
+    allowed = set(r.lower() for r in allowed_roles)
+
+    def dep(current_user: User = Depends(get_current_user)) -> User:
+        role = (getattr(current_user, "role", None) or "user").lower()
+        if allowed and role not in allowed:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Forbidden",
+            )
+        return current_user
+
+    return dep
